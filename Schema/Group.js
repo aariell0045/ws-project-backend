@@ -5,6 +5,7 @@ const groupSchema = new Schema({
 	groupName: { type: String},
 	contacts:[],
 	amount: { type: Number },
+	productionDate:{type: String},
 })
 
 
