@@ -1,0 +1,16 @@
+route: 
+1. /register 
+method: "POST",
+body: username (String), password(String)
+response = "success" (String) status (200)
+bad response = ""username is alredy token" (String) status(400)
+
+route:
+2. /login
+method:"POST",
+body: username (String), password(String)
+response = "true" (Boolean)  userId (String) || "false"  (Boolean) userId (Null) status(200)
+bad response = "username is incorrect" status(400) 
+
+
+
