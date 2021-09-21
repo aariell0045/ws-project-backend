@@ -3,7 +3,7 @@ route:
 method: "POST",
 body: username (String), password(String)
 response = "success" (String) status (200)
-bad response = ""username is alredy token" (String) status(400)
+bad response = "username is alredy token" (String) status(400)
 
 route:
 2. /login
@@ -35,5 +35,54 @@ route:
 5. /group
 method "DELETE",
 body: {
-	
+	userId (ObjectId)
+	groupId (ObjectId)
+}
+
+response = null (null)
+
+rotue:
+6. /contact
+method:"DELETE",
+body: {
+	userId(ObjectId),
+	groupId(ObjectId),
+	contactId(ObjectId)
+}
+response = null
+
+route:
+6. /combine-groups
+method:"PUT",
+body: {
+	userId(ObjectId),
+	groupName(String),
+	groupA(Object),
+	groupB(Object),
+}
+response = CurrentUser(currentUser) {Object} 
+
+route:
+7. /message
+method:"GET",
+params: userId(ObjectId)
+
+
+route:
+8. /message
+method:"PUT",
+body:{
+	messageName(String),
+	contentMessage([]),
+	userId(ObjectId)
+}
+
+route:
+8. /edit-message
+method:"PUT",
+body:{
+	messageName(String),
+	contentMessage([])
+	messageId:(ObjectId),
+	userId:(ObjectId),
 }
