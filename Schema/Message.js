@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
 	messageName: { type: String },
-	messageDate: { type: String },
-	messagesList: [],
+	contentMessage: [],
 });
 
 const Message = mongoose.model("messages", messageSchema);
