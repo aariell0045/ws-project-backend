@@ -118,7 +118,6 @@ async function addGroup(userId, groupName, contacts, res) {
 
 async function editGroup(req, res) {
 	let { userId, groupId, contactId, newContact, newGroupName } = req.body;
-	console.log(newContact);
 	const currentUser = await User.findOne({ _id: userId });
 	if (currentUser) {
 		let groupToEditIndex = currentUser.groups.findIndex((group) => group._id == groupId);

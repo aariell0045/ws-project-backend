@@ -8,7 +8,6 @@ async function deletemessage(req, res) {
 	let messageIndex = currentUser.messages.findIndex((message) => message._id == messageId);
 	if (messageIndex !== -1) {
 		currentUser.messages.splice(messageIndex, 1);
-		console.log(currentUser.messages);
 		await User.findByIdAndUpdate(
 			{ _id: userId },
 			{
