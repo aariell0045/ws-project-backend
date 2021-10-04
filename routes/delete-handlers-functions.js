@@ -8,7 +8,6 @@ async function deletemessage(req, res) {
 	let messageIndex = currentUser.messages.findIndex((message) => message._id == messageId);
 	if (messageIndex !== -1) {
 		currentUser.messages.splice(messageIndex, 1);
-		console.log(currentUser.messages);
 		await User.findByIdAndUpdate(
 			{ _id: userId },
 			{
@@ -44,9 +43,6 @@ async function removeGroup(req, res) {
 
 async function removeContactFromGroup(req, res) {
 	let { userId, groupId, contactId } = req.body;
-	console.log("userId:", userId);
-	console.log("groupId:", groupId);
-	console.log("contactId:", contactId);
 	const currentUser = await User.findOne({ _id: userId });
 	const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 
