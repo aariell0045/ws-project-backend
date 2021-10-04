@@ -3,6 +3,7 @@ const Message = require("../Schema/Message");
 const User = require("../Schema/User");
 const Contact = require("../Schema/Contact");
 const helperFunctions = require("../helper/helperFunctions");
+const { phoneFormater } = require("../helper/helperFunctions");
 
 async function addMessage(req, res) {
 	let { messageName, contentMessage, userId } = req.body;
@@ -34,7 +35,6 @@ async function editMessage(req, res) {
 			messageName,
 			contentMessage,
 		});
-		console.log(currentUser.messages);
 		await User.findByIdAndUpdate(
 			{ _id: userId },
 			{
@@ -118,7 +118,7 @@ async function addGroup(userId, groupName, contacts, res) {
 
 async function editGroup(req, res) {
 	let { userId, groupId, contactId, newContact, newGroupName } = req.body;
-
+	console.log(newContact);
 	const currentUser = await User.findOne({ _id: userId });
 	if (currentUser) {
 		let groupToEditIndex = currentUser.groups.findIndex((group) => group._id == groupId);
@@ -129,6 +129,9 @@ async function editGroup(req, res) {
 			);
 
 			if (contactToEditIndex !== -1 && newContact) {
+				const phoneNumber = phoneFormater(newContact.phoneNumber);
+				newContact.phoneNumber = phoneNumber.properNumber ? phoneNumber.phone : "";
+
 				currentUser.groups[groupToEditIndex].contacts[contactToEditIndex] = {
 					...currentUser.groups[groupToEditIndex].contacts[contactToEditIndex],
 					...newContact,
@@ -156,7 +159,12 @@ async function addContactToGroup(req, res) {
 	const currentUser = await User.findOne({ _id: userId });
 	const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 	if (groupIndex !== -1) {
+		if (newContact.phoneNumber) {
+			const phoneNumber = phoneFormater(newContact.phoneNumber);
+			newContact.phoneNumber = phoneNumber.properNumber ? phoneNumber.phone : "";
+		}
 		currentUser.groups[groupIndex].contacts.push(new Contact(newContact));
+		currentUser.groups[groupIndex].amount += 1;
 		await User.findByIdAndUpdate(
 			{ _id: userId },
 			{

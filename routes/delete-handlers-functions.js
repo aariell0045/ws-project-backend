@@ -44,9 +44,6 @@ async function removeGroup(req, res) {
 
 async function removeContactFromGroup(req, res) {
 	let { userId, groupId, contactId } = req.body;
-	console.log("userId:", userId);
-	console.log("groupId:", groupId);
-	console.log("contactId:", contactId);
 	const currentUser = await User.findOne({ _id: userId });
 	const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 
