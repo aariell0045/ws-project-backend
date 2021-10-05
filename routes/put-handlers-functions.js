@@ -53,6 +53,7 @@ async function editMessage(req, res) {
 
 async function uploadExcelfile(req, res) {
 	let { excelFile, profile, userId, groupName } = req.body;
+	console.log(profile);
 	let { gender } = profile;
 	if (gender && gender !== "without-gender") {
 		excelFile = excelFile.filter((row) => {
@@ -65,7 +66,49 @@ async function uploadExcelfile(req, res) {
 			return false;
 		});
 	}
-	addGroup(userId, groupName, excelFile, res);
+
+	const contacts = excelFile.map((row) => {
+		let tempContact = {
+			phoneNumber: "",
+			contactProfile: {
+				contactFirstName: "",
+				contactLastName: "",
+				email: "",
+				birthday: "",
+				age: undefined,
+				description: "",
+				gender: "",
+			},
+		};
+		if (profile.firstname) {
+			tempContact.contactProfile = row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.lastname) {
+			tempContact.contactProfile.contactLastName =
+				row[profile.lastname.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.email) {
+			tempContact.contactProfile.email =
+				row[profile.email.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.gender) {
+			tempContact.contactProfile.gender =
+				row[profile.gender.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.age) {
+			tempContact.contactProfile.age =
+				row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.birthday) {
+			tempContact.contactProfile.birthday =
+				row[profile.birthday.toUpperCase().charCodeAt(0) - 65];
+		}
+		if (profile.phoneNumber) {
+			tempContact.phoneNumber = row[profile.phoneNumber.toUpperCase().charCodeAt(0) - 65];
+		}
+		return tempContact;
+	});
+	addGroup(userId, groupName, contacts, res);
 }
 
 async function addGroup(userId, groupName, contacts, res) {
