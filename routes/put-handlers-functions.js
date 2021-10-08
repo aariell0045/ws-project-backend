@@ -52,15 +52,18 @@ async function editMessage(req, res) {
 }
 
 async function uploadExcelfile(req, res) {
-	let { excelFile, profile, userId, groupName } = req.body;
+	let { excelFile, profile, userId, groupName, filterGender } = req.body;
 	console.log(profile);
 	let { gender } = profile;
-	if (gender && gender !== "without-gender") {
+	console.log(filterGender);
+
+	if (filterGender !== "without-gender") {
 		excelFile = excelFile.filter((row) => {
-			gender = gender.toLowerCase();
-			let currentGender = row?.gender;
+			filterGender = filterGender.toLowerCase();
+			let currentGender = row[gender.toUpperCase().charCodeAt(0) - 65];
 			currentGender = currentGender?.toLowerCase();
-			if (currentGender === gender) {
+			console.log(currentGender);
+			if (currentGender === filterGender) {
 				return true;
 			}
 			return false;
@@ -81,7 +84,8 @@ async function uploadExcelfile(req, res) {
 			},
 		};
 		if (profile.firstname) {
-			tempContact.contactProfile = row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
+			tempContact.contactProfile.contactFirstName =
+				row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
 		}
 		if (profile.lastname) {
 			tempContact.contactProfile.contactLastName =
