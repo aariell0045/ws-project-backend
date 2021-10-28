@@ -6,6 +6,8 @@ const userSchema = new Schema({
   password: { type: String },
   messagesStatus: { type: Number },
   groups: [],
+  tasks: [],
+  events: [],
   messages: [],
   history: [],
   currentGroup: {},
