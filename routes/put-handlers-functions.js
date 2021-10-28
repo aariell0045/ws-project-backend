@@ -58,9 +58,10 @@ async function uploadExcelfile(req, res) {
   let { excelFile, profile, userId, groupName, filterGender } = req.body;
   let { gender } = profile;
   console.log(filterGender);
-
+  
   if (filterGender !== "without-gender") {
     excelFile = excelFile.filter((row) => {
+      console.log(row)
       filterGender = filterGender.toLowerCase();
       let currentGender = row[gender.toUpperCase().charCodeAt(0) - 65];
       currentGender = currentGender?.toLowerCase();
