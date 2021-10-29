@@ -9,8 +9,21 @@ const userSchema = new Schema({
   tasks: [],
   events: [],
   messages: [],
-  history: [],
-  currentGroup: {},
+  history: [
+    {
+      messageName: String,
+      contentMessage: [
+        {
+          contentField: String,
+          mediaSrc: String,
+        },
+      ],
+      groupName: String,
+      sendDate: String,
+      startPoint: Number,
+      currentPoint: Number,
+    },
+  ],
 });
 
 const User = mongoose.model("users", userSchema);
