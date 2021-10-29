@@ -57,15 +57,16 @@ async function editMessage(req, res) {
 async function uploadExcelfile(req, res) {
   let { excelFile, profile, userId, groupName, filterGender } = req.body;
   let { gender } = profile;
-  console.log(filterGender);
-  
   if (filterGender !== "without-gender") {
     excelFile = excelFile.filter((row) => {
-      console.log(row)
       filterGender = filterGender.toLowerCase();
       let currentGender = row[gender.toUpperCase().charCodeAt(0) - 65];
       currentGender = currentGender?.toLowerCase();
-      console.log(currentGender);
+      if (currentGender.trim("") === "זכר") {
+        currentGender = "male";
+      } else if (currentGender.trim("") === "נקבה") {
+        currentGender = "female";
+      }
       if (currentGender === filterGender) {
         return true;
       }
@@ -209,7 +210,6 @@ async function editGroup(req, res) {
 
 async function addContactToGroup(req, res) {
   let { userId, newContact, groupId } = req.body;
-
   const currentUser = await User.findOne({ _id: userId });
   const groupIndex = currentUser.groups.findIndex(
     (group) => group._id == groupId
@@ -244,32 +244,39 @@ async function combineGroups(req, res) {
 
 async function addTask(req, res) {
   let { taskName, taskColor, taskContent, userId } = req.body;
-  const newTask = await new Task({ taskName, taskColor, taskContent });
-  console.log(newTask);
-  await User.findByIdAndUpdate(
-    { _id: userId },
-    {
-      $push: {
-        tasks: newTask,
-      },
-    }
-  );
+  try {
+    const newTask = await new Task({ taskName, taskColor, taskContent });
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          tasks: newTask,
+        },
+      }
+    );
 
-  res.send(newTask);
+    res.send(newTask);
+  } catch (err) {
+    console.log(err);
+  }
 }
 async function addEvent(req, res) {
   let { eventName, eventColor, eventContent, userId } = req.body;
-  const newEvent = await new Event({ eventName, eventColor, eventContent });
-  await User.findByIdAndUpdate(
-    { _id: userId },
-    {
-      $push: {
-        events: newEvent,
-      },
-    }
-  );
+  try {
+    const newEvent = await new Event({ eventName, eventColor, eventContent });
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          events: newEvent,
+        },
+      }
+    );
 
-  res.send(newEvent);
+    res.send(newEvent);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function updateMessagesStatus(req, res) {

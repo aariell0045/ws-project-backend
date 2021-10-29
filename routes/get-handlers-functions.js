@@ -43,7 +43,6 @@ async function fetchTasks(req, res) {
   const { userId } = req.params;
   try {
     const currentUser = await User.findOne({ _id: userId });
-    console.log(currentUser);
     res.status(200).send(currentUser.tasks);
   } catch (err) {
     res.status(400).send(err);
