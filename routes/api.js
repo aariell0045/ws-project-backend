@@ -4,9 +4,6 @@ const getHandlers = require("./get-handlers-functions");
 const postHandlers = require("./post-handlers-functions");
 const deleteHandlers = require("./delete-handlers-functions");
 const putHandlers = require("./put-handlers-functions");
-router.get("/", function (req, res) {
-  res.send("working good");
-});
 
 router.post("/register", (req, res) => postHandlers.registerHandler(req, res));
 router.post("/login", (req, res) => postHandlers.loginHandler(req, res));
