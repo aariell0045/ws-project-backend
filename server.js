@@ -2,13 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
+const api = require("./routes/api");
 
-const mongooseURI = `mongodb+srv://toam:123987456tofo@ws.ppnha.mongodb.net/ws?retryWrites=true&w=majority`;
+const mongooseURI = `mongodb+srv://toam:123987456tofo@ws.ppnha.mongodb.net/ws`;
 mongoose.connect(mongooseURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-const api = require("./routes/api");
 
 mongoose.connection
   .once("open", () => console.log("connected"))
