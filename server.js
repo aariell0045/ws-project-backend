@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const mongooseURI = `mongodb+srv://toam:123987456tofo@ws.ppnha.mongodb.net/WS?retryWrites=true&w=majority`;
+
+const mongooseURI = `mongodb+srv://toam:123987456tofo@ws.ppnha.mongodb.net/ws?retryWrites=true&w=majority`;
 mongoose.connect(mongooseURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
