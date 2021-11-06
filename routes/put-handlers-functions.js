@@ -69,9 +69,9 @@ async function uploadExcelfile(req, res) {
         filterGender = filterGender.toLowerCase();
         let currentGender = row[gender.toUpperCase().charCodeAt(0) - 65];
         currentGender = currentGender?.toLowerCase();
-        if (currentGender.trim("") === "זכר") {
+        if (currentGender?.trim("") === "זכר") {
           currentGender = "male";
-        } else if (currentGender.trim("") === "נקבה") {
+        } else if (currentGender?.trim("") === "נקבה") {
           currentGender = "female";
         }
         if (currentGender === filterGender) {
