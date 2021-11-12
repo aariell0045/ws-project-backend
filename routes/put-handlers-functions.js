@@ -61,8 +61,51 @@ async function editMessage(req, res) {
 }
 
 async function uploadExcelfile(req, res) {
-  let { excelFile, profile, userId, groupName, filterGender } = req.body;
-  let { gender } = profile;
+  let { excelFile, profile, userId, groupName, filterGender, type } = req.body;
+  let gender;
+  if (profile) {
+    gender = profile.gender;
+  }
+  if (type === "vcf") {
+    const contacts = excelFile.map((row) => {
+      let tempContact = {
+        phoneNumber: "",
+        contactProfile: {
+          contactFirstName: "",
+          contactLastName: "",
+          email: "",
+          birthday: "",
+          age: undefined,
+          description: "",
+          gender: "",
+        },
+      };
+      let fullname = row.contactProfile.contactFirstName.trim("");
+      for (let charIndex = 0; charIndex < fullname.length; charIndex++) {
+        if (fullname[charIndex] === " " || fullname[charIndex] === "-") {
+          const firstname = fullname
+            .split("")
+            .splice(0, charIndex)
+            .join("")
+            .trim("");
+          const lastname = fullname
+            .split("")
+            .splice(charIndex)
+            .join("")
+            .trim("");
+          row.contactProfile.contactFirstName = firstname;
+          row.contactProfile.contactLastName = lastname;
+          break;
+        }
+      }
+
+      return {
+        ...tempContact,
+        ...row,
+      };
+    });
+    return addGroup(userId, groupName, contacts, res);
+  }
   try {
     if (filterGender !== "without-gender") {
       excelFile = excelFile.filter((row) => {
