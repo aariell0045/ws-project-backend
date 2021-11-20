@@ -34,7 +34,13 @@ async function fetchEvents(req, res) {
   const { userId } = req.params;
   try {
     const currentUser = await User.findOne({ _id: userId });
-    res.status(200).send(currentUser.events);
+    const newMap = currentUser.savedDates.entries();
+    let events = {};
+    for (let arr of newMap) {
+      events[arr[0]] = arr[1];
+    }
+
+    res.status(200).send(events);
   } catch (err) {
     res.status(400).send(err);
   }
