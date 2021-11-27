@@ -34,9 +34,7 @@ async function editMessage(req, res) {
 	let { messageId, userId, messageName, contentMessage } = req.body;
 	try {
 		const currentUser = await User.findById({ _id: userId });
-		const messageIndex = currentUser.messages.findIndex(
-			(message) => message._id == messageId
-		);
+		const messageIndex = currentUser.messages.findIndex((message) => message._id == messageId);
 		if (messageIndex !== -1) {
 			currentUser.messages.splice(messageIndex, 1, {
 				...currentUser.messages[messageIndex],
@@ -83,16 +81,8 @@ async function uploadExcelfile(req, res) {
 			let fullname = row.contactProfile.contactFirstName.trim("");
 			for (let charIndex = 0; charIndex < fullname.length; charIndex++) {
 				if (fullname[charIndex] === " " || fullname[charIndex] === "-") {
-					const firstname = fullname
-						.split("")
-						.splice(0, charIndex)
-						.join("")
-						.trim("");
-					const lastname = fullname
-						.split("")
-						.splice(charIndex)
-						.join("")
-						.trim("");
+					const firstname = fullname.split("").splice(0, charIndex).join("").trim("");
+					const lastname = fullname.split("").splice(charIndex).join("").trim("");
 					row.contactProfile.contactFirstName = firstname;
 					row.contactProfile.contactLastName = lastname;
 					break;
@@ -138,32 +128,25 @@ async function uploadExcelfile(req, res) {
 				},
 			};
 			if (profile.firstname) {
-				tempContact.contactProfile.contactFirstName =
-					row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.contactFirstName = row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.lastname) {
-				tempContact.contactProfile.contactLastName =
-					row[profile.lastname.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.contactLastName = row[profile.lastname.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.email) {
-				tempContact.contactProfile.email =
-					row[profile.email.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.email = row[profile.email.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.gender) {
-				tempContact.contactProfile.gender =
-					row[profile.gender.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.gender = row[profile.gender.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.age) {
-				tempContact.contactProfile.age =
-					row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.age = row[profile.firstname.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.birthday) {
-				tempContact.contactProfile.birthday =
-					row[profile.birthday.toUpperCase().charCodeAt(0) - 65];
+				tempContact.contactProfile.birthday = row[profile.birthday.toUpperCase().charCodeAt(0) - 65];
 			}
 			if (profile.phoneNumber) {
-				tempContact.phoneNumber =
-					row[profile.phoneNumber.toUpperCase().charCodeAt(0) - 65];
+				tempContact.phoneNumber = row[profile.phoneNumber.toUpperCase().charCodeAt(0) - 65];
 			}
 			return tempContact;
 		});
@@ -230,25 +213,19 @@ async function editGroup(req, res) {
 	try {
 		const currentUser = await User.findOne({ _id: userId });
 		if (currentUser) {
-			let groupToEditIndex = currentUser.groups.findIndex(
-				(group) => group._id == groupId
-			);
+			let groupToEditIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 
 			if (groupToEditIndex !== -1) {
-				let contactToEditIndex = currentUser.groups[
-					groupToEditIndex
-				].contacts.findIndex((contact) => contact._id == contactId);
+				let contactToEditIndex = currentUser.groups[groupToEditIndex].contacts.findIndex(
+					(contact) => contact._id == contactId
+				);
 
 				if (contactToEditIndex !== -1 && newContact) {
 					const phoneNumber = phoneFormater(newContact.phoneNumber);
-					newContact.phoneNumber = phoneNumber.properNumber
-						? phoneNumber.phone
-						: "";
+					newContact.phoneNumber = phoneNumber.properNumber ? phoneNumber.phone : "";
 
 					currentUser.groups[groupToEditIndex].contacts[contactToEditIndex] = {
-						...currentUser.groups[groupToEditIndex].contacts[
-							contactToEditIndex
-						],
+						...currentUser.groups[groupToEditIndex].contacts[contactToEditIndex],
 						...newContact,
 					};
 				}
@@ -275,17 +252,13 @@ async function addContactToGroup(req, res) {
 	let { userId, newContact, groupId } = req.body;
 	try {
 		const currentUser = await User.findOne({ _id: userId });
-		const groupIndex = currentUser.groups.findIndex(
-			(group) => group._id == groupId
-		);
+		const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 		if (groupIndex !== -1) {
 			if (newContact.phoneNumber) {
 				const phoneNumber = phoneFormater(newContact.phoneNumber);
-				newContact.phoneNumber = phoneNumber.properNumber
-					? phoneNumber.phone
-					: "";
+				newContact.phoneNumber = phoneNumber.properNumber ? phoneNumber.phone : "";
 			}
-			currentUser.groups[groupIndex].contacts.push(new Contact(newContact));
+			currentUser.groups[groupIndex].contacts.unshift(new Contact(newContact));
 			currentUser.groups[groupIndex].amount += 1;
 			await User.findByIdAndUpdate(
 				{ _id: userId },
@@ -315,6 +288,7 @@ async function combineGroups(req, res) {
 
 async function addTask(req, res) {
 	let { taskName, taskColor, taskContent, userId } = req.body;
+	console.log(taskName, taskColor, taskContent, userId);
 	try {
 		const newTask = await new Task({ taskName, taskColor, taskContent });
 		await User.findByIdAndUpdate(
