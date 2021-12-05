@@ -5,9 +5,7 @@ async function deletemessage(req, res) {
 	const { messageId, userId } = req.body;
 	const currentUser = await User.findOne({ _id: userId });
 
-	let messageIndex = currentUser.messages.findIndex(
-		(message) => message._id == messageId
-	);
+	let messageIndex = currentUser.messages.findIndex((message) => message._id == messageId);
 	if (messageIndex !== -1) {
 		currentUser.messages.splice(messageIndex, 1);
 		await User.findByIdAndUpdate(
@@ -26,23 +24,15 @@ async function deletemessage(req, res) {
 async function removeGroup(req, res) {
 	const { userId, groupId } = req.body;
 	try {
-		await User.findById({ _id: userId }, function (err, currentUser) {
-			const groupIndex = currentUser.groups.findIndex(
-				(group) => group._id == groupId
-			);
-			if (groupIndex !== -1) {
-				currentUser.groups.splice(groupIndex, 1);
-				currentUser.save(function (err) {
-					if (err) {
-						res.status(400).json("Error:", err);
-					} else {
-						res.status(200).json(currentUser);
-					}
-				});
-			} else {
-				res.status(400).json("something worng");
-			}
-		});
+		const currentUser = await User.findById({ _id: userId });
+		const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
+		if (groupIndex !== -1) {
+			currentUser.groups.splice(groupIndex, 1);
+			await User.findOneAndUpdate({ _id: userId }, { $set: { groups: currentUser.groups } });
+			res.status(200).send(currentUser.groups);
+		} else {
+			res.status(404).send("faild");
+		}
 	} catch (err) {
 		console.log(err);
 	}
@@ -52,13 +42,9 @@ async function removeContactFromGroup(req, res) {
 	const { userId, groupId, contactId } = req.body;
 	try {
 		const currentUser = await User.findOne({ _id: userId });
-		const groupIndex = currentUser.groups.findIndex(
-			(group) => group._id == groupId
-		);
+		const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
 
-		const contactIndex = currentUser.groups[groupIndex].contacts.findIndex(
-			(contact) => contact._id == contactId
-		);
+		const contactIndex = currentUser.groups[groupIndex].contacts.findIndex((contact) => contact._id == contactId);
 		currentUser.groups[groupIndex].contacts.splice(contactIndex, 1);
 		currentUser.groups[groupIndex].amount -= 1;
 
@@ -107,9 +93,7 @@ async function removeEvent(req, res) {
 		if (savedDate.events.length === 1) {
 			user.savedDates.delete(key);
 		} else {
-			const eventIndex = savedDate.events.findIndex(
-				(event) => eventId == event._id
-			);
+			const eventIndex = savedDate.events.findIndex((event) => eventId == event._id);
 
 			savedDate.events.splice(eventIndex, 1);
 			user.savedDates.set(key, {

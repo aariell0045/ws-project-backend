@@ -58,7 +58,7 @@ async function registerHandler(req, res) {
 async function loginHandler(req, res) {
 	let { userName, password } = req.body;
 	try {
-		userNmae = userName.trim();
+		userName = userName.trim();
 		userName = userName.toLowerCase();
 
 		let user = await User.findOne({ userName });
@@ -68,9 +68,7 @@ async function loginHandler(req, res) {
 			if (result) {
 				return res.status(200).json({ result, userId: user._id });
 			} else {
-				return res
-					.status(200)
-					.send({ result: "username or password is incorrect", userId: null });
+				return res.status(200).send({ result: "username or password is incorrect", userId: null });
 			}
 		});
 	} catch (err) {
