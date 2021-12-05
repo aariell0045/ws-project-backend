@@ -23,27 +23,16 @@ async function deletemessage(req, res) {
 
 async function removeGroup(req, res) {
 	const { userId, groupId } = req.body;
-	const findCurrentUserAndRemoveGroup = (err, currentUser) => {
-		try {
-			const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
-			if (groupIndex !== -1) {
-				currentUser.groups.splice(groupIndex, 1);
-				currentUser.save(function (err) {
-					if (err) {
-						res.status(400).json("Error:", err);
-					} else {
-						res.status(200).json(currentUser);
-					}
-				});
-			} else {
-				res.status(400).json("something worng");
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	try {
-		await User.findById({ _id: userId }, (error, currentUser) => findCurrentUserAndRemoveGroup(error, currentUser));
+		const currentUser = await User.findById({ _id: userId });
+		const groupIndex = currentUser.groups.findIndex((group) => group._id == groupId);
+		if (groupIndex !== -1) {
+			currentUser.groups.splice(groupIndex, 1);
+			await User.findOneAndUpdate({ _id: userId }, { $set: { groups: currentUser.groups } });
+			res.status(200).send(currentUser.groups);
+		} else {
+			res.status(404).send("faild");
+		}
 	} catch (err) {
 		console.log(err);
 	}
